@@ -121,11 +121,6 @@ public class CreateNote extends AppCompatActivity {
         });
     }
 
-//    private void update(Long time){
-//        myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+time);
-//        myRef.child("title").setValue()
-//    }
-
     private void update_note(Long time) {
         button.setText("Update");
         myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + time);
@@ -154,7 +149,7 @@ public class CreateNote extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(CreateNote.this, HomeActivity.class));
+//                startActivity(new Intent(CreateNote.this, HomeActivity.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -214,7 +209,7 @@ public class CreateNote extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(CreateNote.this, HomeActivity.class));
+//                                    startActivity(new Intent(CreateNote.this, HomeActivity.class));
                                     finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {

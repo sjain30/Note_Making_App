@@ -4,15 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -87,8 +83,10 @@ public class HomeActivity extends AppCompatActivity {
                 LoginManager.getInstance().logOut();
                 startActivity(new Intent(HomeActivity.this, MainActivity.class));
                 finish();
+                break;
             case R.id.profile:
                 startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
