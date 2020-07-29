@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,7 +41,7 @@ public class CreateNote extends AppCompatActivity {
     private Spinner spinner;
     private Button button;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("notes");
+    DatabaseReference myRef;
     private static final int GET_FROM_GALLERY = 1;
     private Uri filePath;
     private Notes notes;
@@ -60,6 +62,7 @@ public class CreateNote extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myRef = database.getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 if (spinner.getSelectedItem().toString().equals("High"))
                     priority = 3;
                 else if (spinner.getSelectedItem().toString().equals("Moderate"))
@@ -67,7 +70,10 @@ public class CreateNote extends AppCompatActivity {
                 else
                     priority = 1;
                 notes = new Notes(title.getText().toString(), body.getText().toString(), priority, null, System.currentTimeMillis());
-                uploadImage(filePath);
+                if (filePath!=null)
+                    uploadImage(filePath);
+                else
+                    uploadNote(notes);
             }
         });
 
@@ -75,6 +81,22 @@ public class CreateNote extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getImage();
+            }
+        });
+    }
+
+    private void uploadNote(Notes notes) {
+        myRef.child(notes.getTimestamp() + "").setValue(notes).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(CreateNote.this, HomeActivity.class));
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CreateNote.this, "An error occurred!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,6 +149,8 @@ public class CreateNote extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(CreateNote.this, HomeActivity.class));
+                                    finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

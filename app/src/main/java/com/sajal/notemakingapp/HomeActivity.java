@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         final ArrayList<Notes> list = new ArrayList<>();
 
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes");
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mDatabaseReference.orderByChild("priority").addValueEventListener(new ValueEventListener() {
             @Override
