@@ -1,6 +1,7 @@
 package com.sajal.notemakingapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,12 +11,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -40,6 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final Notes note = notes.get(position);
+        Picasso.get().load(note.getImage()).into(holder.imageView);
         holder.title.setText(note.getTitle());
         holder.body.setText(note.getBody());
         int priority = note.getPriority();
@@ -61,17 +72,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.high:
-                                Notes newNote = new Notes(note.getTitle(), note.getBody(),3,note.getImage(),note.getTimestamp());
-                                mDatabaseReference.child(note.getTimestamp() + "").setValue(newNote);
+                            case R.id.delete:
+                                if (note.getImage()!=null) {
+                                    StorageReference delete = FirebaseStorage.getInstance().getReferenceFromUrl(note.getImage());
+                                    delete.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(context, "Notes deleted successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context, "Unable to delete file\nContact the Devs", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                                DatabaseReference mDatabaserefernce = FirebaseDatabase.getInstance().getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()).child(String.valueOf(note.getTimestamp()));
+                                mDatabaserefernce.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Log.d("Adapter", "onComplete: database entry removed");
+                                    }
+                                });
+                                notifyDataSetChanged();
+                            case R.id.update:
 
-                            case R.id.moderate:
-                                Notes newNote2 = new Notes(note.getTitle(), note.getBody(),2,note.getImage(),note.getTimestamp());
-                                mDatabaseReference.child(note.getTimestamp() + "").setValue(newNote2);
-
-                            case R.id.low:
-                                Notes newNote3 = new Notes(note.getTitle(), note.getBody(),1,note.getImage(),note.getTimestamp());
-                                mDatabaseReference.child(note.getTimestamp() + "").setValue(newNote3);
                         }
                         return true;
                     }

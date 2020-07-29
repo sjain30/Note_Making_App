@@ -50,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+        mDatabaseReference.keepSynced(true);
         mDatabaseReference.orderByChild("priority").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -10,12 +10,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -25,14 +26,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
 
 public class CreateNote extends AppCompatActivity {
 
@@ -62,7 +60,8 @@ public class CreateNote extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef = database.getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                myRef.keepSynced(true);
                 if (spinner.getSelectedItem().toString().equals("High"))
                     priority = 3;
                 else if (spinner.getSelectedItem().toString().equals("Moderate"))
@@ -70,10 +69,19 @@ public class CreateNote extends AppCompatActivity {
                 else
                     priority = 1;
                 notes = new Notes(title.getText().toString(), body.getText().toString(), priority, null, System.currentTimeMillis());
-                if (filePath!=null)
-                    uploadImage(filePath);
-                else
+                if (filePath != null)
+                    if (haveNetwork())
+                        uploadImage(filePath);
+                    else
+                        Toast.makeText(CreateNote.this, "No internet available!", Toast.LENGTH_SHORT).show();
+                else {
                     uploadNote(notes);
+                    if (!haveNetwork()) {
+                        Toast.makeText(CreateNote.this, "Note created in offline mode!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(CreateNote.this, HomeActivity.class));
+                        finish();
+                    }
+                }
             }
         });
 
@@ -169,5 +177,19 @@ public class CreateNote extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private boolean haveNetwork() {
+        boolean have_WIFI = false;
+        boolean have_MobileData = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
+        for (NetworkInfo info : networkInfos) {
+            if (info.getTypeName().equalsIgnoreCase("WIFI"))
+                if (info.isConnected()) have_WIFI = true;
+            if (info.getTypeName().equalsIgnoreCase("MOBILE DATA"))
+                if (info.isConnected()) have_MobileData = true;
+        }
+        return have_WIFI || have_MobileData;
     }
 }
