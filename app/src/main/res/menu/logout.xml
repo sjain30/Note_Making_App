@@ -7,4 +7,9 @@
         android:title="LOGOUT"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/profile"
+        android:title="PROFILE"
+        app:showAsAction="ifRoom"/>
+
 </menu>

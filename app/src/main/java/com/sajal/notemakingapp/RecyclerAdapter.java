@@ -1,6 +1,8 @@
 package com.sajal.notemakingapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -94,9 +96,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                                         Log.d("Adapter", "onComplete: database entry removed");
                                     }
                                 });
-                                notifyDataSetChanged();
+                                break;
                             case R.id.update:
-
+                                Intent intent = new Intent(context, CreateNote.class);
+                                intent.putExtra("update",note.getTimestamp());
+                                context.startActivity(intent);
+                                break;
                         }
                         return true;
                     }

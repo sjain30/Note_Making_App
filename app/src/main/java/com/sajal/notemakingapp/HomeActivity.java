@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         final ArrayList<Notes> list = new ArrayList<>();
 
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         mDatabaseReference.keepSynced(true);
         mDatabaseReference.orderByChild("priority").addValueEventListener(new ValueEventListener() {
             @Override
@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
                     list.add(note);
                 }
                 if (list.isEmpty())
-                    Snackbar.make(findViewById(R.id.homeView),"No notes found",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.homeView), "No notes found", Snackbar.LENGTH_LONG).show();
                 else {
                     Collections.reverse(list);
                     recyclerView = findViewById(R.id.recyclerView);
@@ -81,12 +81,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 startActivity(new Intent(HomeActivity.this, MainActivity.class));
                 finish();
+            case R.id.profile:
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
