@@ -5,4 +5,7 @@
         <item>Moderate</item>
         <item>Low</item>
     </string-array>
+    <string name="facebook_app_id">299488994732463</string>
+    <string name="fb_login_protocol_scheme">fb299488994732463</string>
+
 </resources>
