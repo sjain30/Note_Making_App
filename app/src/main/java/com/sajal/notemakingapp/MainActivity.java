@@ -64,17 +64,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "onSuccess: "+loginResult);
+                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 Fb_Login(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
                 Log.d(TAG, "onCancel: ");
+                Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "onError: "+error);
+                Toast.makeText(MainActivity.this, "Error: "+error, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     Log.d(TAG, "onComplete: ");
+                    Toast.makeText(MainActivity.this, "Complete", Toast.LENGTH_SHORT).show();
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                     finish();

@@ -49,7 +49,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         final Notes note = notes.get(position);
         Picasso.get().load(note.getImage()).into(holder.imageView);
@@ -69,13 +69,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 final PopupMenu popup = new PopupMenu(context, v);
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.priority_menu, popup.getMenu());
-                final DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes");
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.delete:
+                                Log.d("Adapter", "onMenuItemClick: delete clicked");
                                 if (note.getImage()!=null) {
+                                    Log.d("Adapter", "onMenuItemClick: in if");
                                     StorageReference delete = FirebaseStorage.getInstance().getReferenceFromUrl(note.getImage());
                                     delete.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -90,14 +91,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                                     });
                                 }
                                 DatabaseReference mDatabaserefernce = FirebaseDatabase.getInstance().getReference("notes/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()).child(String.valueOf(note.getTimestamp()));
-                                mDatabaserefernce.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                mDatabaserefernce.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Log.d("Adapter", "onComplete: database entry removed");
+                                    public void onSuccess(Void aVoid) {
+
+                                        Log.d("Delete Success", "onSuccess: ");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("Delete Failed", "onFailure: "+e.getMessage());
                                     }
                                 });
+                                notifyDataSetChanged();
+                                notes.remove(position);
                                 break;
                             case R.id.update:
+                                Log.d("Adapter", "onMenuItemClick: updating");
                                 Intent intent = new Intent(context, CreateNote.class);
                                 intent.putExtra("update",note.getTimestamp());
                                 context.startActivity(intent);

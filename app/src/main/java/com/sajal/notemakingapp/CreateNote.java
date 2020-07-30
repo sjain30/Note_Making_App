@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 public class CreateNote extends AppCompatActivity {
 
+    private static final String TAG = "CreateNote";
     private TextView title, body, choose;
     private ImageView imageView;
     private Spinner spinner;
@@ -86,15 +89,11 @@ public class CreateNote extends AppCompatActivity {
                 if (timestamp == 0) { //New Note
                     notes = new Notes(title.getText().toString(), body.getText().toString(), priority, null, System.currentTimeMillis());
                     if (filePath != null) //Note with image
-                        if (haveNetwork())
-                            uploadImage(filePath);
-                        else
-                            Toast.makeText(CreateNote.this, "No internet available!", Toast.LENGTH_SHORT).show();
+                        uploadImage(filePath);
                     else { //Note without image
                         uploadNote(notes);
                         if (!haveNetwork()) {
                             Toast.makeText(CreateNote.this, "Note created in offline mode!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(CreateNote.this, HomeActivity.class));
                             finish();
                         }
                     }
@@ -102,12 +101,13 @@ public class CreateNote extends AppCompatActivity {
 
                     if (filePath != null) //Note with no image change
                         notes = new Notes(title.getText().toString(), body.getText().toString(), priority, filePath.toString(), timestamp);
-                    else //Note without image
+                    else { //Note without image
+                        Log.d(TAG, "onClick: without image");
                         notes = new Notes(title.getText().toString(), body.getText().toString(), priority, null, timestamp);
-                    if (imageChange){ //Image updated
-                        uploadImage(filePath);
                     }
-                    else //No Image update
+                    if (imageChange) { //Image updated
+                        uploadImage(filePath);
+                    } else //No Image update
                         uploadNote(notes);
                 }
             }
@@ -127,6 +127,8 @@ public class CreateNote extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                try {
+
                 Notes notes = snapshot.getValue(Notes.class);
                 Picasso.get().load(notes.getImage()).into(imageView);
                 title.setText(notes.getTitle());
@@ -135,6 +137,11 @@ public class CreateNote extends AppCompatActivity {
                 if (notes.getImage() != null)
                     filePath = Uri.parse(notes.getImage());
                 timestamp = notes.getTimestamp();
+//                }
+//                catch (Exception e){
+//                    Log.d(TAG, "onDataChange: "+e.getMessage());
+//                }
+                myRef.removeEventListener(this);
             }
 
             @Override
@@ -229,6 +236,18 @@ public class CreateNote extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: ");
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        super.onDestroy();
     }
 
     private boolean haveNetwork() {
