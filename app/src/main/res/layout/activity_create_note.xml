@@ -9,25 +9,30 @@
     <EditText
         android:id="@+id/upload_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
+        android:background="@drawable/field_layout"
         android:ems="10"
         android:hint="Title"
         android:inputType="textPersonName"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/upload_body"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
+        android:background="@drawable/field_layout"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Body"
         android:inputType="textMultiLine"
+        android:padding="5dp"
+        android:textAlignment="viewStart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upload_title" />
 
@@ -37,17 +42,17 @@
         android:layout_height="100dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
+        android:background="@android:drawable/ic_menu_gallery"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upload_body"
-        tools:srcCompat="@drawable/ic_google" />
+        app:layout_constraintTop_toBottomOf="@+id/upload_body" />
 
-    <TextView
+    <Button
         android:id="@+id/chooseImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:text="Click to select an image"
+        android:text="Choose Image"
         app:layout_constraintStart_toEndOf="@+id/upload_image"
         app:layout_constraintTop_toTopOf="@+id/upload_image" />
 
@@ -56,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         android:entries="@array/priority"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upload_image" />
@@ -70,4 +75,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Priority"
+        app:layout_constraintBottom_toTopOf="@+id/spinner"
+        app:layout_constraintStart_toStartOf="@+id/spinner" />
 </androidx.constraintlayout.widget.ConstraintLayout>
