@@ -17,8 +17,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +52,7 @@ public class CreateNote extends AppCompatActivity {
     private long timestamp;
     private Notes notes;
     private int priority;
+    private ProgressBar progressBar;
     private boolean imageChange;
 
     @Override
@@ -65,6 +68,7 @@ public class CreateNote extends AppCompatActivity {
         choose = findViewById(R.id.chooseImage);
         timestamp = 0; //New Note
         imageChange = false;
+        progressBar = findViewById(R.id.workProgressBar);
 
         //Check if note is being updated
         Intent intent = getIntent();
@@ -75,6 +79,9 @@ public class CreateNote extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                progressBar.setVisibility(View.VISIBLE);
                 //Set path
                 myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
                 myRef.keepSynced(true);
@@ -156,12 +163,16 @@ public class CreateNote extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                progressBar.setVisibility(View.GONE);
 //                startActivity(new Intent(CreateNote.this, HomeActivity.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(CreateNote.this, "An error occurred!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -216,12 +227,16 @@ public class CreateNote extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(CreateNote.this, "Note successfully created!", Toast.LENGTH_SHORT).show();
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    progressBar.setVisibility(View.GONE);
 //                                    startActivity(new Intent(CreateNote.this, HomeActivity.class));
                                     finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(CreateNote.this, "An error occurred!", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -232,6 +247,8 @@ public class CreateNote extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(CreateNote.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

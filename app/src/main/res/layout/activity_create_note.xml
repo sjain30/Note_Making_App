@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:background="@drawable/field_layout"
         android:ems="10"
         android:hint="Title"
@@ -81,7 +81,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="Priority"
+        android:text="Note Priority"
         app:layout_constraintBottom_toTopOf="@+id/spinner"
         app:layout_constraintStart_toStartOf="@+id/spinner" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note Body"
+        app:layout_constraintBottom_toTopOf="@+id/upload_body"
+        app:layout_constraintStart_toStartOf="@+id/upload_body" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note Title"
+        app:layout_constraintBottom_toTopOf="@+id/upload_title"
+        app:layout_constraintStart_toStartOf="@+id/upload_title" />
+
+    <ProgressBar
+        android:id="@+id/workProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create" />
 </androidx.constraintlayout.widget.ConstraintLayout>
