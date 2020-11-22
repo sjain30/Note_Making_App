@@ -36,7 +36,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.sajal.notemakingapp.dagger.DaggerNoteComponent;
+import com.sajal.notemakingapp.dagger.NoteComponent;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 public class CreateNote extends AppCompatActivity {
 
@@ -46,6 +50,7 @@ public class CreateNote extends AppCompatActivity {
     private Spinner spinner;
     private Button button;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
+    @Inject
     DatabaseReference myRef;
     private static final int GET_FROM_GALLERY = 1;
     private Uri filePath;
@@ -59,6 +64,9 @@ public class CreateNote extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
+
+        NoteComponent component = DaggerNoteComponent.create();
+        component.injectCreateNote(this);
 
         title = findViewById(R.id.upload_title);
         body = findViewById(R.id.upload_body);
@@ -83,7 +91,7 @@ public class CreateNote extends AppCompatActivity {
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 progressBar.setVisibility(View.VISIBLE);
                 //Set path
-                myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                myRef = database.getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
                 myRef.keepSynced(true);
                 //Set Priority
                 if (spinner.getSelectedItem().toString().equals("High"))

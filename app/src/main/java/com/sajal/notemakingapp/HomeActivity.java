@@ -19,13 +19,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sajal.notemakingapp.dagger.DaggerNoteComponent;
+import com.sajal.notemakingapp.dagger.NoteComponent;
+
 import java.util.ArrayList;
 import java.util.Collections;
+
+import javax.inject.Inject;
 
 public class HomeActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
-    private DatabaseReference mDatabaseReference;
+    @Inject
+    public DatabaseReference mDatabaseReference;
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
 
@@ -44,8 +50,10 @@ public class HomeActivity extends AppCompatActivity {
 
         final ArrayList<Notes> list = new ArrayList<>();
 
+        NoteComponent component = DaggerNoteComponent.create();
+        component.injectHomeActivity(this);
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        mDatabaseReference = FirebaseDatabase.getInstance().getReference("notes/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         mDatabaseReference.keepSynced(true);
         mDatabaseReference.orderByChild("priority").addValueEventListener(new ValueEventListener() {
             @Override

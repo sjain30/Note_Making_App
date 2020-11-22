@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-kapt' //For annotation processor in Kotlin
 
 android {
     compileSdkVersion 29
@@ -40,5 +42,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
+    //Dagger 2 Dependency
+    kapt "com.google.dagger:dagger-compiler:2.30"
+    implementation "com.google.dagger:dagger:2.30"
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
